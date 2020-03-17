@@ -360,7 +360,7 @@ surf(pweight,ptexture,Zt)
 
 lpgfr_lme1 = fitlme(grdata,'log_PGFR ~ logweightcentered + sfc_centered');
 lpgfr_lme2 = fitlme(grdata,'log_PGFR ~ logweightcentered + sfc_centered + (1|SubjectID)');
-compare_complete1 = compare(pfr_lme1,pfr_lme2)
+compare_complete1 = compare(lpgfr_lme1,lpgfr_lme2)
 fe4 = fixedEffects(lpgfr_lme1);
 Zt = exp(fe4(1) + fe4(2)*Wtp + fe4(3)*Ttp);
 figure(4)
