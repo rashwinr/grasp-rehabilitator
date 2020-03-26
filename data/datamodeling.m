@@ -162,6 +162,156 @@ lgd2 = legend([A,B,C],'FontSize',20);
 % set(lgd2,'MarkerSize',20);
 lgd2.Orientation = 'horizontal';
 
+
+%% PLFR vs. Weight log-linear
+
+lplfr_weight_ols = fitlm(grdata,'log_PLFR ~ Weightcentered');
+lplfr_lme1 = fitlme(grdata(grdata.Texture == 'C1',:),'log_PLFR ~ 1 + Weightcentered');
+lplfr_lme2 = fitlme(grdata(grdata.Texture == 'C1',:),'log_PLFR ~ 1 + Weightcentered + (1|SubjectID)');
+lplfr_lme3 = fitlme(grdata(grdata.Texture == 'C1',:),'log_PLFR ~ 1 + Weightcentered + (1 + Weightcentered|SubjectID)');
+lfe = fixedEffects(lplfr_lme3);
+[~,~,lre] = randomEffects(lplfr_lme3);
+lre.Level = nominal(lre.Level);
+lre.Name = nominal(lre.Name);
+lplfr_lme4 = fitlme(grdata(grdata.Texture == 'C1',:),'log_PLFR ~ 1 + Weightcentered + (1 + Weightcentered|SubjectID)+ (1|Trial)');
+            comp_plfr = compare(lplfr_lme1,lplfr_lme2,'nsim',100);
+            comp_plfr1 = compare(lplfr_lme2,lplfr_lme3,'nsim',100);
+            comp_plfr2 = compare(lplfr_lme3,lplfr_lme4,'nsim',100);
+lplfr_lm_1 = fitlm(grdata(grdata.SubjectID==SID(1) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(1) & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_2 = fitlm(grdata(grdata.SubjectID==SID(2)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(2)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_3 = fitlm(grdata(grdata.SubjectID==SID(3)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(3)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_4 = fitlm(grdata(grdata.SubjectID==SID(4)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(4)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_5 = fitlm(grdata(grdata.SubjectID==SID(5)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(5)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_6 = fitlm(grdata(grdata.SubjectID==SID(6)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(6)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_7 = fitlm(grdata(grdata.SubjectID==SID(7)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(7)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_8 = fitlm(grdata(grdata.SubjectID==SID(8)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(8)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_9 = fitlm(grdata(grdata.SubjectID==SID(9)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(9)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_10 = fitlm(grdata(grdata.SubjectID==SID(10)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(10)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_11 = fitlm(grdata(grdata.SubjectID==SID(11)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(11)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_12 = fitlm(grdata(grdata.SubjectID==SID(12)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(12)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_13 = fitlm(grdata(grdata.SubjectID==SID(13)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(13)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_14 = fitlm(grdata(grdata.SubjectID==SID(14)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(14)  & grdata.Texture == 'C1',:).log_PLFR);
+lplfr_lm_15 = fitlm(grdata(grdata.SubjectID==SID(15)  & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(15)  & grdata.Texture == 'C1',:).log_PLFR);
+
+f1 = figure(2);
+hold on
+sgtitle('Peak Load Force Rate (N/s) for individual subjects (Log-linear relationship')
+
+subplot(3,5,1)
+hold on
+A = scatter(grdata(grdata.SubjectID==SID(1) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(1) & grdata.Texture == 'C1',:).PLFR,'*r','DisplayName','PLFR');
+B = plot(grdata(grdata.SubjectID==SID(1) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_1.Coefficients.Estimate(1)+lplfr_lm_1.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(1) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2,'DisplayName','OLS-model');
+C = plot(grdata(grdata.SubjectID==SID(1) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(1))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(1))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(1) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2,'DisplayName','LME-model');
+hold off
+
+subplot(3,5,2)
+hold on
+scatter(grdata(grdata.SubjectID==SID(2) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(2) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(2) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_2.Coefficients.Estimate(1)+lplfr_lm_2.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(2) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(2) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(2))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(2))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(2) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,3)
+hold on
+scatter(grdata(grdata.SubjectID==SID(3) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(3) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(3) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_3.Coefficients.Estimate(1)+lplfr_lm_3.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(3) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(3) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(3))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(3))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(3) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,4)
+hold on
+scatter(grdata(grdata.SubjectID==SID(4) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(4) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(4) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_4.Coefficients.Estimate(1)+lplfr_lm_4.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(4) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(4) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(4))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(4))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(4) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,5)
+hold on
+scatter(grdata(grdata.SubjectID==SID(5) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(5) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(5) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_5.Coefficients.Estimate(1)+lplfr_lm_5.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(5) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(5) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(5))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(5))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(5) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,6)
+hold on
+scatter(grdata(grdata.SubjectID==SID(6) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(6) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(6) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_6.Coefficients.Estimate(1)+lplfr_lm_6.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(6) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(6) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(6))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(6))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(6) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,7)
+hold on
+scatter(grdata(grdata.SubjectID==SID(7) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(7) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(7) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_7.Coefficients.Estimate(1)+lplfr_lm_7.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(7) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(7) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(7))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(7))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(7) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,8)
+hold on
+scatter(grdata(grdata.SubjectID==SID(8) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(8) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(8) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_8.Coefficients.Estimate(1)+lplfr_lm_8.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(8) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(8) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(8))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(8))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(8) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,9)
+hold on
+scatter(grdata(grdata.SubjectID==SID(9) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(9) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(9) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_9.Coefficients.Estimate(1)+lplfr_lm_9.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(9) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(9) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(9))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(9))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(9) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,10)
+hold on
+scatter(grdata(grdata.SubjectID==SID(10) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(10) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(10) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_10.Coefficients.Estimate(1)+lplfr_lm_10.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(10) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(10) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(10))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(10))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(10) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,11)
+hold on
+scatter(grdata(grdata.SubjectID==SID(11) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(11) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(11) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_11.Coefficients.Estimate(1)+lplfr_lm_11.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(11) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(11) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(11))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(11))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(11) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,12)
+hold on
+scatter(grdata(grdata.SubjectID==SID(12) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(12) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(12) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_12.Coefficients.Estimate(1)+lplfr_lm_12.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(12) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(12) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(2))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(12))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(12) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,13)
+hold on
+scatter(grdata(grdata.SubjectID==SID(13) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(13) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(13) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_13.Coefficients.Estimate(1)+lplfr_lm_13.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(13) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(13) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(13))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(13))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(13) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,14)
+hold on
+scatter(grdata(grdata.SubjectID==SID(14) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(14) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(14) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_14.Coefficients.Estimate(1)+lplfr_lm_14.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(14) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(14) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(14))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(14))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(14) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+subplot(3,5,15)
+hold on
+scatter(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).PLFR,'*r')
+plot(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,exp(lplfr_lm_15.Coefficients.Estimate(1)+lplfr_lm_15.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight),'-.b','LineWidth',2)
+plot(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(15))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(15))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
+hold off
+
+han = axes(f1,'visible','off');
+han.XLabel.Visible = 'on';
+han.YLabel.Visible = 'on';
+xlabel(han,'Object mass (grams)','FontSize',20);
+ylabel(han,'PLFR: Peak Load Force Rate (N/s)','FontSize',20);
+lgd2 = legend([A,B,C],'FontSize',20);
+% set(lgd2,'MarkerSize',20);
+lgd2.Orientation = 'horizontal';
+
+
 %%      PGFR vs. Texture (Log model)
 % A1 = 0.94; A2 = 1; B1 = 0.5; B2 = 0.59; C1 = 1.17;
 
@@ -216,7 +366,7 @@ pgfr_lm_13 = fitlm(grdata(grdata.SubjectID==SID(13) & grdata.Weight == 250,:).lo
 pgfr_lm_14 = fitlm(grdata(grdata.SubjectID==SID(14) & grdata.Weight == 250,:).log_sfc,grdata(grdata.SubjectID==SID(14) & grdata.Weight == 250,:).log_PGFR);
 pgfr_lm_15 = fitlm(grdata(grdata.SubjectID==SID(15) & grdata.Weight == 250,:).log_sfc,grdata(grdata.SubjectID==SID(15) & grdata.Weight == 250,:).log_PGFR);
 
-f2 = figure(2)
+f2 = figure(3)
 hold on
 sgtitle('Log Peak Grip Force Rate (N/s) for individual subjects')
 
@@ -340,18 +490,18 @@ lgd3.Orientation = 'horizontal';
 
 grdata.logweight = log(grdata.Weight);
 grdata.logweightcentered = grdata.logweight - mean(unique(grdata.logweight));
-lplfr_lme1 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered');
-lplfr_lme2 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered + (1|SubjectID)');
+lplfr_lme11 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered');
+lplfr_lme21 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered + (1|SubjectID)');
 
-compare_complete = compare(lplfr_lme1,lplfr_lme2)
-fe3 = fixedEffects(lplfr_lme1);
+compare_complete = compare(lplfr_lme11,lplfr_lme21)
+fe3 = fixedEffects(lplfr_lme11);
 pweight = linspace(100,1000,100);
 pweightcentered = log(pweight)-mean(log(pweight));
 ptexture = linspace(-1,1,100);
 ptexturecentered = ptexture - mean(ptexture);
 [Wtp,Ttp] = meshgrid(pweightcentered,ptexturecentered);
 Zt = exp(fe3(1) + fe3(2)*Wtp + fe3(3)*Ttp);
-figure(3)
+figure(4)
 surf(pweight,ptexture,Zt)
 
 %% Mixed effects of weight and texture  on PGFR (power model)
@@ -363,5 +513,6 @@ lpgfr_lme2 = fitlme(grdata,'log_PGFR ~ logweightcentered + sfc_centered + (1|Sub
 compare_complete1 = compare(lpgfr_lme1,lpgfr_lme2)
 fe4 = fixedEffects(lpgfr_lme1);
 Zt = exp(fe4(1) + fe4(2)*Wtp + fe4(3)*Ttp);
-figure(4)
+
+figure(5)
 surf(pweight,ptexture,Zt)
