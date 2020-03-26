@@ -166,26 +166,33 @@ lgd2.Orientation = 'horizontal';
 % A1 = 0.94; A2 = 1; B1 = 0.5; B2 = 0.59; C1 = 1.17;
 
 grdata.sfc = zeros(height(grdata),1);
-
+grdata.sfcinverse = zeros(height(grdata),1);
 for i = 1:height(grdata)
    if grdata.Texture(i) == 'A1'
        grdata.sfc(i)=0.94;
+       grdata.sfcinverse(i) = 1/0.94;
    end
    if grdata.Texture(i) == 'A2'
        grdata.sfc(i)=1;
+       grdata.sfcinverse(i) = 1;
    end
    if grdata.Texture(i) == 'B1'
        grdata.sfc(i)=0.5;
+       grdata.sfcinverse(i) = 2;
    end
    if grdata.Texture(i) == 'B2'
        grdata.sfc(i)=0.59;
+       grdata.sfcinverse(i) = 1/0.59;
    end
    if grdata.Texture(i) == 'C1'
        grdata.sfc(i)=1.17;
+       grdata.sfcinverse(i) = 1/1.17;
    end
    
 end
-grdata.log_sfc = log(grdata.sfc);
+
+grdata.log_sfc = zeros(height(grdata),1);
+grdata.log_sfc = log(grdata.sfcinverse);
 grdata.sfc_centered = grdata.log_sfc-mean(unique(grdata.log_sfc));
 pgfr_Texture_ols = fitlm(grdata(grdata.Weight == 250,:),'PGFR ~ sfc');
 pgfr_lme1 = fitlme(grdata(grdata.Weight == 250,:),'log_PGFR ~ sfc_centered');
@@ -222,9 +229,9 @@ sgtitle('Log Peak Grip Force Rate (N/s) for individual subjects')
 
 subplot(3,5,1)
 hold on
-A1 = scatter(grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_sfc,grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_PGFR,'*r','DisplayName','PGFR')
-B1 = plot(grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_sfc,pgfr_lm_1.Coefficients.Estimate(1)+pgfr_lm_1.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_sfc,'-.b','LineWidth',2,'DisplayName','OLS-model')
-C1 = plot(grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_sfc,fe1(1)+re1.Estimate(re1.Level == num2str(SIDnum(1))&re1.Name == '(Intercept)')+(fe1(2)+re1.Estimate(re1.Level == num2str(SIDnum(1))&re1.Name == 'sfc_centered'))*grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).sfc_centered,'-k','LineWidth',2,'DisplayName','LME-model')
+A1 = scatter(grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_sfc,grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_PGFR,'*r','DisplayName','PGFR');
+B1 = plot(grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_sfc,pgfr_lm_1.Coefficients.Estimate(1)+pgfr_lm_1.Coefficients.Estimate(2)*grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_sfc,'-.b','LineWidth',2,'DisplayName','OLS-model');
+C1 = plot(grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).log_sfc,fe1(1)+re1.Estimate(re1.Level == num2str(SIDnum(1))&re1.Name == '(Intercept)')+(fe1(2)+re1.Estimate(re1.Level == num2str(SIDnum(1))&re1.Name == 'sfc_centered'))*grdata(grdata.SubjectID==SID(1) & grdata.Weight == 250,:).sfc_centered,'-k','LineWidth',2,'DisplayName','LME-model');
 hold off
 
 subplot(3,5,2)
@@ -325,7 +332,7 @@ plot(grdata(grdata.SubjectID==SID(15) & grdata.Weight == 250,:).log_sfc,pgfr_lm_
 plot(grdata(grdata.SubjectID==SID(15) & grdata.Weight == 250,:).log_sfc,fe1(1)+re1.Estimate(re1.Level == num2str(SIDnum(15))&re1.Name == '(Intercept)')+(fe1(2)+re1.Estimate(re1.Level == num2str(SIDnum(15))&re1.Name == 'sfc_centered'))*grdata(grdata.SubjectID==SID(15) & grdata.Weight == 250,:).sfc_centered,'-k','LineWidth',2)
 hold off
 
-han1 = axes(f2,'visible','off')
+han1 = axes(f2,'visible','off');
 han1.XLabel.Visible = 'on';
 han1.YLabel.Visible = 'on';
 xlabel(han1,'Log Static friction coefficient','FontSize',20);
