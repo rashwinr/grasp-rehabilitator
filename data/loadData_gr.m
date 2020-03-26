@@ -20,7 +20,7 @@ opts.VariableTypes = ["double", "double", "categorical", "categorical", "double"
 opts = setvaropts(opts, [3, 4], "EmptyFieldRule", "auto");
 
 % Import the data
-grdata = readtable("F:\github\grasp-rehabilitator\data\datatable.xlsx", opts, "UseExcel", false);
+grdata = readtable("\grasp-rehabilitator\data\datatable.xlsx", opts, "UseExcel", false);
 
 
 %% Clear temporary variables
