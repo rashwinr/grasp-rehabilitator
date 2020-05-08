@@ -301,7 +301,7 @@ plot(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,exp(lpl
 plot(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(15))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(15))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
 hold off
 
-han2 = axes(f1,'visible','off');
+han2 = axes(f2,'visible','off');
 han2.XLabel.Visible = 'on';
 han2.YLabel.Visible = 'on';
 xlabel(han2,'Object mass (grams)','FontSize',20);
@@ -449,7 +449,7 @@ plot(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,exp(lpl
 plot(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,exp(lfe(1)+lre.Estimate(lre.Level == num2str(SIDnum(15))&lre.Name == '(Intercept)')+(lfe(2)+lre.Estimate(lre.Level == num2str(SIDnum(15))&lre.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weightcentered),'-k','LineWidth',2)
 hold off
 
-han3 = axes(f1,'visible','off');
+han3 = axes(f3,'visible','off');
 han3.XLabel.Visible = 'on';
 han3.YLabel.Visible = 'on';
 xlabel(han3,'Object mass (grams)','FontSize',20);
@@ -597,7 +597,7 @@ plot(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,plfr_lm
 plot(grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weight,fe(1)+re.Estimate(re.Level == num2str(SIDnum(15))&re.Name == '(Intercept)')+(fe(2)+re.Estimate(re.Level == num2str(SIDnum(15))&re.Name == 'Weightcentered'))*grdata(grdata.SubjectID==SID(15) & grdata.Texture == 'C1',:).Weightcentered,'-k','LineWidth',2)
 hold off
 
-han4 = axes(f1,'visible','off');
+han4 = axes(f4,'visible','off');
 han4.XLabel.Visible = 'on';
 han4.YLabel.Visible = 'on';
 xlabel(han4,'Object mass (grams)','FontSize',20);
