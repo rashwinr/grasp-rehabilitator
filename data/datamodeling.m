@@ -492,14 +492,10 @@ grdata.logweight = log(grdata.Weight);
 grdata.logweightcentered = grdata.logweight - mean(unique(grdata.logweight));
 lplfr_lme11 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered');
 lplfr_lme21 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered + (1|SubjectID)');
-
-<<<<<<< HEAD
 compare_complete = compare(lplfr_lme1,lplfr_lme2);
 fe3 = fixedEffects(lplfr_lme1);
-=======
 compare_complete = compare(lplfr_lme11,lplfr_lme21)
 fe3 = fixedEffects(lplfr_lme11);
->>>>>>> e1e77bd3e7f3fe367d343df989f6556b5dc186c1
 pweight = linspace(100,1000,100);
 pweightcentered = log(pweight)-mean(log(pweight));
 ptexture = linspace(-1,1,100);
