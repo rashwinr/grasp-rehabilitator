@@ -652,86 +652,74 @@ PGFR_loglinear_Rsquared = [pgfr_lme1_loglinear.Rsquared.Ordinary;pgfr_lme2_logli
 compare(plfr_lme3_log,plfr_lme3_loglinear)
 compare(pgfr_lme3_log,pgfr_lme3_loglinear)
 
+%% Mixed effects of weight and texture on PLFR (power model)
+
+% PLFR = alpha * W^(Beta) * T^(Gamma)
+% log(PLFR) = log(alpha) + Beta*log(W) + Gamma*log(T)
+
+grdata.logweight = log(grdata.Weight);
+grdata.logweightcentered = grdata.logweight - mean(unique(grdata.logweight));
+lplfr_lme11 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered');
+lplfr_lme21 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered + (1|SubjectID)');
+% compare_complete = compare(lplfr_lme11,lplfr_lme2);
+fe3 = fixedEffects(lplfr_lme11);
+compare_complete1 = compare(lplfr_lme11,lplfr_lme21);
+fe4 = fixedEffects(lplfr_lme21);
+pweight = linspace(100,1000,100);
+plogweight = log(pweight);
+plogweightcentered = plogweight-mean(plogweight);
+ptexture = linspace(-1,1,100);
+ptexturecentered = ptexture - mean(ptexture);
+[Wtp,Ttp] = meshgrid(plogweightcentered,ptexturecentered);
+Zt = exp(fe4(1) + fe4(2)*Wtp + fe4(3)*Ttp);
+figure(5)
+surf(pweight,ptexture,Zt);
 
 
+%% Mixed effects of weight and texture on PGFR (power model)
 
+%PGFR = alpha \times W^(Beta) \times T^(Gamma)
+%log(PGFR) = log(alpha) + Beta*log(W) + Gamma*log(T)
 
+lpgfr_lme1 = fitlme(grdata,'log_PGFR ~ logweightcentered + sfc_centered');
+lpgfr_lme2 = fitlme(grdata,'log_PGFR ~ logweightcentered + sfc_centered + (1|SubjectID)');
+compare_complete1 = compare(lpgfr_lme1,lpgfr_lme2);
+fe5 = fixedEffects(lpgfr_lme2);
+Zt = exp(fe5(1) + fe5(2)*Wtp + fe5(3)*Ttp);
+figure(6)
+surf(pweight,ptexture,Zt);
 
+%% Mixed effects of weight and texture on PLFR (power model-2)
 
+%PLFR = alpha * e^(beta*W) * T^(gamma)
+%log(PLFR) = log(alpha) + beta*W + gamma log(T)
 
+lplfr_lme21 = fitlme(grdata,'log_PLFR ~ Weightcentered + sfc_centered');
+lplfr_lme22 = fitlme(grdata,'log_PLFR ~ Weightcentered + sfc_centered + (1|SubjectID)');
+compare_complete2 = compare(lplfr_lme21,lplfr_lme22);
+fe6 = fixedEffects(lplfr_lme21);
+compare_complete12 = compare(lplfr_lme21,lplfr_lme22);
+fe7 = fixedEffects(lplfr_lme22);
+pweight = linspace(100,1000,100);
+pweightcentered = pweight-mean(pweight);
+ptexture = linspace(-1,1,100);
+ptexturecentered = ptexture - mean(ptexture);
+[Wtp1,Ttp1] = meshgrid(pweightcentered,ptexturecentered);
+Zt = exp(fe7(1) + fe7(2)*Wtp1 + fe7(3)*Ttp1);
+figure(7)
+surf(pweight,ptexture,Zt);
 
+%% Mixed effects of weight and texture on PGFR (power model-2)
 
+%PGFR = alpha \times e^(beta*W) \times T^(Gamma)
+%log(PGFR) = log(alpha) + W + Gamma log(T)
 
+lpgfr_lme21 = fitlme(grdata,'log_PGFR ~ Weightcentered + sfc_centered');
+lpgfr_lme22 = fitlme(grdata,'log_PGFR ~ Weightcentered + sfc_centered + (1|SubjectID)');
+compare_complete1 = compare(lpgfr_lme21,lpgfr_lme22);
+fe8 = fixedEffects(lpgfr_lme22);
+Zt = exp(fe8(1) + fe8(2)*Wtp1 + fe8(3)*Ttp1);
 
-
-%%
-% %% Mixed effects of weight and texture on PLFR (power model)
-% 
-% %PLFR = alpha * W^(Beta) * T^(Gamma)
-% %log(PLFR) = log(alpha) + Beta*log(W) + Gamma*log(T)
-% 
-% grdata.logweight = log(grdata.Weight);
-% grdata.logweightcentered = grdata.logweight - mean(unique(grdata.logweight));
-% lplfr_lme11 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered');
-% lplfr_lme21 = fitlme(grdata,'log_PLFR ~ logweightcentered + sfc_centered + (1|SubjectID)');
-% % compare_complete = compare(lplfr_lme11,lplfr_lme2);
-% fe3 = fixedEffects(lplfr_lme1);
-% compare_complete1 = compare(lplfr_lme11,lplfr_lme21);
-% fe4 = fixedEffects(lplfr_lme21);
-% pweight = linspace(100,1000,100);
-% plogweight = log(pweight);
-% plogweightcentered = plogweight-mean(plogweight);
-% ptexture = linspace(-1,1,100);
-% ptexturecentered = ptexture - mean(ptexture);
-% [Wtp,Ttp] = meshgrid(plogweightcentered,ptexturecentered);
-% Zt = exp(fe4(1) + fe4(2)*Wtp + fe4(3)*Ttp);
-% figure(5)
-% surf(pweight,ptexture,Zt);
-
-
-% %% Mixed effects of weight and texture on PGFR (power model)
-% 
-% %PGFR = alpha \times W^(Beta) \times T^(Gamma)
-% %log(PGFR) = log(alpha) + Beta*log(W) + Gamma*log(T)
-% 
-% lpgfr_lme1 = fitlme(grdata,'log_PGFR ~ logweightcentered + sfc_centered');
-% lpgfr_lme2 = fitlme(grdata,'log_PGFR ~ logweightcentered + sfc_centered + (1|SubjectID)');
-% compare_complete1 = compare(lpgfr_lme1,lpgfr_lme2);
-% fe5 = fixedEffects(lpgfr_lme2);
-% Zt = exp(fe5(1) + fe5(2)*Wtp + fe5(3)*Ttp);
-% figure(6)
-% surf(pweight,ptexture,Zt);
-% 
-% %% Mixed effects of weight and texture on PLFR (power model-2)
-% 
-% %PLFR = alpha * e^(beta*W) * T^(gamma)
-% %log(PLFR) = log(alpha) + beta*W + gamma log(T)
-% 
-% lplfr_lme21 = fitlme(grdata,'log_PLFR ~ Weightcentered + sfc_centered');
-% lplfr_lme22 = fitlme(grdata,'log_PLFR ~ Weightcentered + sfc_centered + (1|SubjectID)');
-% compare_complete2 = compare(lplfr_lme21,lplfr_lme22);
-% fe6 = fixedEffects(lplfr_lme21);
-% compare_complete12 = compare(lplfr_lme21,lplfr_lme22);
-% fe7 = fixedEffects(lplfr_lme22);
-% pweight = linspace(100,1000,100);
-% pweightcentered = pweight-mean(pweight);
-% ptexture = linspace(-1,1,100);
-% ptexturecentered = ptexture - mean(ptexture);
-% [Wtp1,Ttp1] = meshgrid(pweightcentered,ptexturecentered);
-% Zt = exp(fe7(1) + fe7(2)*Wtp1 + fe7(3)*Ttp1);
-% figure(7)
-% surf(pweight,ptexture,Zt);
-% 
-% %% Mixed effects of weight and texture on PGFR (power model-2)
-% 
-% %PGFR = alpha \times e^(beta*W) \times T^(Gamma)
-% %log(PGFR) = log(alpha) + W + Gamma log(T)
-% 
-% lpgfr_lme21 = fitlme(grdata,'log_PGFR ~ Weightcentered + sfc_centered');
-% lpgfr_lme22 = fitlme(grdata,'log_PGFR ~ Weightcentered + sfc_centered + (1|SubjectID)');
-% compare_complete1 = compare(lpgfr_lme21,lpgfr_lme22);
-% fe8 = fixedEffects(lpgfr_lme22);
-% Zt = exp(fe8(1) + fe8(2)*Wtp1 + fe8(3)*Ttp1) ;
-% figure(8)
-% surf(pweight,ptexture,Zt);
+figure(8)
+surf(pweight,ptexture,Zt);
 
