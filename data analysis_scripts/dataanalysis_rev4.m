@@ -1,12 +1,16 @@
 % Data analysis for DoD written by Ashwin RajKumar
 % Edited by Matthew Bird
+
 clc
 clear all
 close all
 %Variables involved in the study GFO, PLFR, and PreLD
 % A = 'C:\Users\mbird\Documents\Quarantine Files\Grip Device\GripDataUpdate_04_08_20\M120'; 
+
 A = 'C:\Users\mbird\Downloads\Updated_Test_Grip_Data'; 
+
 cd(A);      %Enter the command prompt of the folder.
+
 list=dir();        
 spike_files=dir('*.txt');       %Collects all the file names in a single variable with *.txt file type
 
